@@ -23,4 +23,4 @@ INSERT INTO cards VALUES
 SELECT * from cards order by value desc;
 
 *Listed the total value of the card list*
-select sum(cost) from cards;
+select sum(value) from cards;
