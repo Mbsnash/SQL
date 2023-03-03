@@ -1,0 +1,32 @@
+/*In this SQL, I'm querying a database of Marvel comic universe characters to show various function uses.*/
+
+/*List all the Marvel comic universe characters by popularity*/
+SELECT name, popularity, alignment 
+FROM marvels 
+ORDER BY popularity DESC;
+
+/*Find all the Marvel characters who have total attributes greater than 25*/
+SELECT name, alignment, SUM(intelligence + strength + speed + durability + energy_Projection + fighting_skills) AS attribute_total 
+FROM marvels 
+ORDER BY name 
+HAVING attribute_total > 25;
+
+/*Find all Good characters with popularities above 50 but strength score below 5*/
+SELECT name, popularity, alignment, strength 
+FROM marvels 
+WHERE popularity > 50 AND alignment = 'Good' AND strength < 5;
+
+/*Find all Female characters that are also Good*/
+SELECT name, alignment, gender 
+FROM marvels 
+WHERE alignment = "Good" AND gender = "Female";
+
+/*Classify hometown statuses as USA, Not USA, Alien*/
+SELECT name, hometown,
+    CASE
+        WHEN hometown = "USA" OR hometown = "Canada" THEN "North American"
+        WHEN hometown = 'UK' OR hometown = 'Germany' OR hometown = 'Kenya' OR hometown = 'Latveria' OR hometown = 'Germany' THEN 'Not American'
+        ELSE 'Alien'
+    END AS 'Citizenship'
+FROM marvels 
+ORDER BY citizenship;
