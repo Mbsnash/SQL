@@ -1,0 +1,26 @@
+*I created a table of popular Magic the Gathering cards*
+
+CREATE TABLE cards (id INTEGER PRIMARY KEY, name TEXT, color TEXT, intro TEXT, rarity TEXT, type TEXT, value INTEGER);
+
+INSERT INTO cards VALUES 
+(1, "Black Lotus", "N/A", "Alpha", "Rare", "Artifact", 6500),
+(2, 'Mox Pearl', 'N/A', 'Alpha', 'Rare', 'Artifact', 5000),
+(3, "Mox Jet", "N/A", "Alpha", "Rare", "Artifact", 5000),
+(4, "Mox Emerald", "N/A", "Alpha", "Rare", "Artifact", 5000),
+(5, "Mox Sapphire", "N/A", "Alpha", "Rare", "Artifact", 5000),
+(6, "Mox Ruby", "N/A", "Alpha", "Rare", "Artifact", 5000),
+(7, "Tropical Island", "N/A", "Alpha", "Rare", "Land", 3000),
+(8, "Volcanic Island", "N/A", "Alpha", "Rare", "Land", 3000),
+(9, "Savannah", "N/A", "Alpha", "Rare", "Land", 3000),
+(10, "Scrubland", "N/A", "Alpha", "Rare", "Land", 3000),
+(11, "Underground Sea", "N/A", "Alpha", "Rare", "Land", 3000),
+(12, "Bayou", "N/A", "Alpha", "Rare", "Land", 3000),
+(13, "Plateau", "N/A", "Alpha", "Rare", "Land", 3000),
+(14, "Tundra", "N/A", "Alpha", "Rare", "Land", 3000),
+(15, "Badlands", "N/A", "Alpha", "Rare", "Land", 3000);
+
+*Listed the cards by value starting with the most valuable*
+SELECT * from cards order by value desc;
+
+*Listed the total value of the card list*
+select sum(cost) from cards;
