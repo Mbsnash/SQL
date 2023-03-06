@@ -1,0 +1,32 @@
+/* Create table about the people and what they do here */
+create table movie_stars (id integer primary key autoincrement,
+fullname TEXT,
+spouse TEXT,
+age integer);
+
+insert into movie_stars (fullname, spouse, age) values ("Tom Hanks", "Rita Wilson", 66);
+insert into movie_stars (fullname, spouse, age) values ("Ryan Reynolds", "Blake Lively", 46);
+insert into movie_stars (fullname, spouse, age) values ("Andy Garcia", "Marivi Garcia", 66);
+insert into movie_stars (fullname, spouse, age) values ("George Clooney", "Amal Clooney", 61);
+insert into movie_stars (fullname, spouse, age) values ("Brad Pitt", "NONE", 59);
+insert into movie_stars (fullname, spouse, age) values ("Matt Damon", "Luciana Barroso", 52);
+insert into movie_stars (fullname, spouse, age) values ("Don Cheadle", "Brigid Coulter", 58);
+insert into movie_stars (fullname, spouse, age) values ("Paul Rudd", "Julie Yaeger", 53);
+
+create table work (id integer primary key autoincrement,
+first_film text,
+no_of_credits integer,
+highest_grossing text);
+
+insert into work (first_film, no_of_credits, highest_grossing) values ("He Knows You're Alone", 96, "Toy Story 4");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Ordinary Magic", 128, "Deadpool");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Blue Skies Again", 114, "Ocean's Eleven");
+insert into work (first_film, no_of_credits, highest_grossing) values ("And They're Off", 84, "Ocean's Eleven");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Hunk", 97, "Interstellar");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Mystic Pizza", 88, "World War Z");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Moving Violations", 111, "Avengers: Endgame");
+insert into work (first_film, no_of_credits, highest_grossing) values ("Jamie's Secret", 133, "Avengers: Endgame");
+
+select movie_stars.fullname, work.no_of_credits, work.highest_grossing from movie_stars
+left join work
+on movie_stars.id = work.id;
