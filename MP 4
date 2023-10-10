@@ -1,0 +1,26 @@
+// A project I worked on for my Data Analyst course. We were answering various questions about a fictional stores' sales
+
+select * from sales limit 5
+
+SELECT c.Divorced, SUM(p.Wines) AS TotalWines
+FROM customer c
+JOIN sales p ON c.ID = p.ID
+GROUP BY c.Divorced
+
+SELECT c.Master, c.PhD, SUM(s.Sweets) AS TotalSweets
+FROM customer c
+JOIN sales s ON c.ID = s.ID
+WHERE c.Single <> '1' AND (c.Master = '1' OR c.PhD = '1')
+GROUP BY Master, PhD
+
+SELECT AVG(c.AGE) AS AveAge, AVG(c.Income) AS AveIncome,
+    SUM(s.Meats) AS TotalMeats, SUM(s.Seafood) AS TotalSeafood
+FROM customer c
+JOIN sales s  ON c.ID = s.ID
+WHERE c.State = 'State-California'
+
+SELECT SUM(s.Premium) AS TotalPremium, AVG(c.Income) AS AveIncome
+FROM customer c
+INNER JOIN marketing m ON c.ID = m.ID
+INNER JOIN sales s ON c.ID = s.ID
+WHERE c.Age > 50 AND m.MC5 = '1'
