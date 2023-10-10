@@ -1,0 +1,164 @@
+// This is the code I wrote as part of my SQL coding final exam for my Data Analytics course.
+
+SELECT p.productID, p.NAME, AVG(r.rating) AS avgrating, COUNT(r.rating) AS num_ratings
+FROM product p
+JOIN productReview r ON p.productID = r.productID
+GROUP BY NAME
+ORDER BY NAME DESC;
+
+2.1
+SELECT m.productModelID, d.Description
+FROM productModelProductDescriptionCulture m
+JOIN productDescription d ON m.productDescriptionID = d.productDescriptionID
+WHERE m.cultureID = 'en'
+GROUP BY productModelID ;
+
+2.2
+WITH english_description (productmodelid, description) AS
+(
+    SELECT m.productModelID, d.Description
+FROM productModelProductDescriptionCulture m
+JOIN productDescription d ON m.productDescriptionID = d.productDescriptionID
+WHERE m.cultureID = 'en'
+GROUP BY productModelID 
+)
+SELECT e.productmodelid, e.description, p.NAME, SUM(o.orderqty) AS total_orders
+FROM product p
+JOIN english_description e ON e.productmodelid = p.productmodelid
+JOIN salesOrderDetail o ON p.productid = o.productid
+GROUP BY e.productmodelid 
+ORDER BY total_orders DESC
+LIMIT 10;
+
+3.1
+SELECT o.productid, SUM(o.orderqty) AS quantity
+FROM salesOrderDetail o
+GROUP BY productid 
+ORDER BY productid ASC
+
+
+3.2
+SELECT p.productid, c.name AS category, s.name AS subcategory, p.listprice
+FROM productsubcategory s
+JOIN product p ON s.productsubcategoryid = p.productsubcategoryid
+JOIN productcategory c ON s.productcategoryid = c.productcategoryid
+GROUP BY productid
+ORDER BY productid ASC
+
+
+3.3
+WITH product_quantities AS
+(
+    SELECT o.productid, SUM(o.orderqty) AS quantity
+FROM salesOrderDetail o
+GROUP BY productid 
+ORDER BY productid ASC
+),
+product_prices AS
+(
+    SELECT p.productid, c.name AS category, s.name AS subcategory, p.listprice
+FROM productsubcategory s
+JOIN product p ON s.productsubcategoryid = p.productsubcategoryid
+JOIN productcategory c ON s.productcategoryid = c.productcategoryid
+GROUP BY productid
+ORDER BY productid ASC
+)
+SELECT pp.category, pp.subcategory, AVG(pp.listprice) AS average_price_in_subcategory, SUM(pq.quantity) AS total_items_sold_in_subcategory
+FROM product_prices pp
+JOIN product_quantities pq ON pp.productid = pq.productid
+GROUP BY subcategory
+ORDER BY category ASC
+
+SELECT salespersonid, SUM(subtotal) AS totalsales
+FROM salesorderheader
+WHERE salespersonid IS NOT NULL AND salespersonid <> ""
+AND orderdate >= '2014-01-31 00:00:00'
+GROUP BY salespersonid
+ORDER BY totalsales DESC
+LIMIT 5
+
+6.1
+SELECT salesorderid, SUM((unitPrice - (unitPriceDiscount * 0.01)) * orderQty) AS ordertotal
+FROM salesorderdetail
+GROUP BY salesorderid
+ORDER BY salesorderid ASC
+LIMIT 10
+
+
+6.2
+WITH orders AS
+(
+    SELECT salesorderid, SUM((unitPrice - (unitPriceDiscount * 0.01)) * orderQty) AS ordertotal
+FROM salesorderdetail
+GROUP BY salesorderid
+ORDER BY salesorderid 
+),
+salesPersonAndOrders AS
+(
+    SELECT salespersonid, SUM(subtotal) AS totalsales, salesorderid
+FROM salesorderheader
+WHERE salespersonid IS NOT NULL AND salespersonid <> ""
+AND orderdate >= '2014-01-31 00:00:00'
+GROUP BY salespersonid
+ORDER BY totalsales DESC
+)
+SELECT p.salespersonid, SUM(o.ordertotal) AS ordertotalsum
+FROM salesPersonAndOrders p
+JOIN orders o ON p.salesOrderID = o.salesOrderID
+GROUP BY salespersonid
+ORDER BY ordertotalsum DESC
+LIMIT 5
+
+WITH salesPersonTotalSales AS
+(    
+    WITH orders AS
+(
+    SELECT salesorderid, SUM((unitPrice - (unitPriceDiscount * 0.01)) * orderQty) AS ordertotal
+FROM salesorderdetail
+GROUP BY salesorderid
+ORDER BY salesorderid 
+),
+salesPersonAndOrders AS
+(
+    SELECT salespersonid, SUM(subtotal) AS totalsales, salesorderid
+FROM salesorderheader
+WHERE salespersonid IS NOT NULL AND salespersonid <> ""
+AND orderdate >= '2014-01-31 00:00:00'
+GROUP BY salespersonid
+ORDER BY totalsales DESC
+)
+SELECT p.salespersonid, SUM(o.ordertotal) AS ordertotalsum
+FROM salesPersonAndOrders p
+JOIN orders o ON p.salesOrderID = o.salesOrderID
+GROUP BY salespersonid
+ORDER BY ordertotalsum DESC
+)
+SELECT pts.salespersonid, pts.ordertotalsum, sp.commissionpct
+FROM salespersontotalsales pts
+JOIN salesperson sp ON pts.salespersonid = sp.businessentityid
+GROUP BY salespersonid
+ORDER BY salespersonid ASC
+
+8.1
+SELECT o.salespersonid, o.salesorderid, COALESCE(r.currencyrateid, 'None') AS currencyrateid, COALESCE(r.tocurrencycode, 'None') AS tocurrencycode
+FROM salesorderheader o
+LEFT JOIN currencyrate r ON o.currencyrateid = r.currencyrateid
+WHERE o.salespersonid IS NOT NULL AND o.salespersonid <> ""
+AND o.orderdate >= '2014-01-01 00:00:00'
+ORDER BY salespersonid
+LIMIT 10
+
+
+8.2
+SELECT o.salespersonid, o.salesorderid,
+CASE
+    WHEN r.tocurrencycode IS NULL THEN "USD"
+    ELSE r.tocurrencycode
+    END AS tocurrencycode
+FROM salesorderheader o
+LEFT JOIN currencyrate r ON o.currencyrateid = r.currencyrateid
+WHERE o.salespersonid IS NOT NULL AND o.salespersonid <> ""
+AND o.orderdate >= '2014-01-01 00:00:00'
+ORDER BY salespersonid
+LIMIT 10
+
